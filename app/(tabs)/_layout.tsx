@@ -8,6 +8,8 @@ import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 
+import { Ionicons } from '@expo/vector-icons';
+
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
@@ -38,6 +40,15 @@ export default function TabLayout() {
         options={{
           title: 'Explore',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+        }}
+      />
+      
+      {/* Aba para ver a tela de criação de hábitos */}
+      <Tabs.Screen
+        name="createHabit"
+        options={{
+          title: 'Criar',
+          tabBarIcon: ({ color }) => <Ionicons size={28} name="add-circle-outline" color={color} />,
         }}
       />
     </Tabs>
