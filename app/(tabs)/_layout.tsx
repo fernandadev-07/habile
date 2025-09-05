@@ -22,7 +22,7 @@ export default function TabLayout() {
         tabBarBackground: TabBarBackground,
         tabBarStyle: Platform.select({
           ios: {
-            // Use a transparent background on iOS to show the blur effect
+            // Use a transparent background on iOS para mostrar o blur
             position: 'absolute',
           },
           default: {},
@@ -42,13 +42,25 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
         }}
       />
-      
-      {/* Aba para ver a tela de criação de hábitos */}
+
       <Tabs.Screen
         name="createHabit"
         options={{
           title: 'Criar',
-          tabBarIcon: ({ color }) => <Ionicons size={28} name="add-circle-outline" color={color} />,
+          tabBarIcon: ({ color }) => (
+            <Ionicons size={28} name="add-circle-outline" color={color} />
+          ),
+        }}
+      />
+
+      {/*aba de hábitos */}
+      <Tabs.Screen
+        name="habits"
+        options={{
+          title: 'Hábitos',
+          tabBarIcon: ({ color }) => (
+            <Ionicons size={28} name="checkbox-outline" color={color} />
+          ),
         }}
       />
     </Tabs>
