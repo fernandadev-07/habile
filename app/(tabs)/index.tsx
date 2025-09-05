@@ -1,14 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, StyleSheet, Animated, Dimensions, Image } from 'react-native';
+import { View, Text, StyleSheet, Animated, Dimensions, Image, ScrollView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import Habits from './habits';
 
 const { width, height } = Dimensions.get('window');
 
 export default function HomeScreen() {
   const [showSplash, setShowSplash] = useState(true);
-  const fadeAnim = useRef(new Animated.Value(1)).current; // começa visível
+  const fadeAnim = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
-    // Animação: espera 2s, depois some em 1s
     setTimeout(() => {
       Animated.timing(fadeAnim, {
         toValue: 0,
@@ -30,30 +31,39 @@ export default function HomeScreen() {
     );
   }
 
+  // Conteúdo principal
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Olá, Habile 🚀</Text>
-      <Text>Bem-vinda ao seu app!</Text>
-    </View>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+      <ScrollView
+        contentContainerStyle={{
+          minHeight: height,
+          justifyContent: 'center',
+          alignItems: 'center',
+          padding: 16,
+        }}
+      >
+        <Text style={styles.title}>Olá, esse é o Habile! 🚀</Text>
+        <Text style={{ marginBottom: 20, textAlign: 'center' }}>
+          Bem-vindo ao seu app de hábitos, sua vida mais organizada!
+        </Text>
+
+        {/* Aqui vai a seção de hábitos */}
+        <Habits />
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   splashContainer: {
     flex: 1,
-    backgroundColor: '#fff', // fundo do splash
+    backgroundColor: '#fff',
     justifyContent: 'center',
     alignItems: 'center',
   },
   logo: {
     width: width * 0.5,
     height: width * 0.5,
-  },
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
   },
   title: {
     fontSize: 24,
