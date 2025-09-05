@@ -1,33 +1,51 @@
-// app/(tabs)/habits.tsx
-import React, { useState } from "react";
+import { useRouter, useFocusEffect } from 'expo-router';
+import React, { useState, useCallback } from "react";
 import { View, Text, FlatList, TouchableOpacity, StyleSheet } from "react-native";
+import { api, Habit } from '../../services/api';
+
+type LocalHabit = Habit & { completed: boolean };
 
 export default function HabitsScreen() {
-  const [habits, setHabits] = useState([
-    { id: "1", title: "Tarefa 1", completed: true },
-    { id: "2", title: "Tarefa 2", completed: false },
-  ]);
+  const router = useRouter();
+  const [habits, setHabits] = useState<LocalHabit[]>([]);
 
-  function toggleHabit(id: string) {
-    setHabits(habits.map(habit =>
-      habit.id === id ? { ...habit, completed: !habit.completed } : habit
-    ));
-  }
+  const loadHabits = useCallback(() => {
+    api.getHabits()
+      .then(data => {
+        const normalized = (Array.isArray(data) ? data : []).map(h => ({
+          ...h,
+          completed: false,
+        }));
+        setHabits(normalized);
+      })
+      .catch(e => {
+        console.error('Erro ao buscar hábitos:', e);
+        setHabits([]);
+      });
+  }, []);
 
-  function addHabit() {
-    const newHabit = {
-      id: String(habits.length + 1),
-      title: `Tarefa ${habits.length + 1}`,
-      completed: false,
-    };
-    setHabits([...habits, newHabit]);
-  }
+  // Carrega hábitos sempre que a tela estiver em foco
+  useFocusEffect(
+    useCallback(() => {
+      loadHabits();
+    }, [loadHabits])
+  );
+
+  const toggleHabit = (id: number) => {
+    setHabits(prev =>
+      prev.map(h => h.id === id ? { ...h, completed: !h.completed } : h)
+    );
+  };
+
+  const goToCreateHabit = () => {
+    router.push('/createHabit');
+  };
 
   return (
     <View style={styles.container}>
       <FlatList
         data={habits}
-        keyExtractor={item => item.id}
+        keyExtractor={item => String(item.id)}
         renderItem={({ item }) => (
           <TouchableOpacity
             style={[styles.habit, item.completed && styles.habitCompleted]}
@@ -38,13 +56,20 @@ export default function HabitsScreen() {
             </Text>
           </TouchableOpacity>
         )}
+        ListEmptyComponent={
+          <View style={{ padding: 20 }}>
+            <Text style={{ textAlign: 'center', color: '#666' }}>Nenhum hábito encontrado.</Text>
+          </View>
+        }
       />
-      <TouchableOpacity style={styles.addButton} onPress={addHabit}>
+
+      <TouchableOpacity style={styles.addButton} onPress={goToCreateHabit}>
         <Text style={styles.addButtonText}>+</Text>
       </TouchableOpacity>
     </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 20, backgroundColor: "#fff" },

@@ -19,22 +19,26 @@ class ApiService {
  private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
   try {
     const url = `${this.baseURL}${endpoint}`;
+    console.log('Request URL:', url, 'Options:', options);
     const response = await fetch(url, {
       headers: { 'Content-Type': 'application/json' },
       ...options,
     });
+    console.log('Response status:', response.status);
 
     if (!response.ok) {
       throw new Error(`Erro HTTP ${response.status}`);
     }
 
     const data = await response.json();
+    console.log('Response data:', data);
     return data as T;
   } catch (e) {
     console.error('Falha na requisição:', e);
-    return [] as unknown as T; 
+    return null as unknown as T;
   }
 }
+
 
 
   // Busca hábitos do usuário padrão
